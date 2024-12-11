@@ -27,8 +27,8 @@ async def login(auth_data: AuthRequest, db: AsyncSession = Depends(get_db)):
     if not user or not verify_password(auth_data.password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # Return user data (email) to be used in the Gateway to create the token
-    return {"email": user.email}
+    # Return user data to be used in the Gateway to create the token
+    return {"email": user.email, "id": user.id}
 
 
 @app.post("/register")
@@ -45,3 +45,5 @@ async def register(auth_data: AuthRequest, db: AsyncSession = Depends(get_db)):
     db.add(db_user)
     await db.commit()
     return {"message": "User registered successfully"}
+
+

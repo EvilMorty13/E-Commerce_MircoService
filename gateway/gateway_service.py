@@ -30,34 +30,19 @@ async def login(auth_data: AuthRequest):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         user = response.json()
-        access_token = create_access_token(data={"sub": user["email"]})
+        print(user)
+        access_token = create_access_token(data={"email": user["email"], "user_id": user["id"]})
     
     return {"access_token": access_token, "token_type": "bearer"}
 
-# @app.post("/register")
-# async def register(auth_data: AuthRequest):
-#     async with httpx.AsyncClient() as client:
-#         response = await client.post(f"{USER_SERVICE_URL}/register", 
-#                                      json={"email": auth_data.email, 
-#                                            "password": auth_data.password})
-        
-#         if response.status_code != 200:
-#             raise HTTPException(status_code=400, detail="Registration failed")
-        
-#         registration_response = response.json()
-    
-#     return {"message": registration_response["message"]}
 
-
-# Endpoint to validate token
 @app.post("/validate-token")
 async def validate_token(request: Request):
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Authorization header missing or invalid")
-    
     token = auth_header.split(" ")[1]
-
+    
     try:
         # Decode the token and return its payload
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

@@ -12,7 +12,9 @@ load_dotenv()
 
 app = FastAPI(lifespan=lifespan)
 
+
 AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL")  
+
 
 async def validate_token(request: Request):
     auth_header = request.headers.get("Authorization")
@@ -27,21 +29,22 @@ async def validate_token(request: Request):
 
 
 
-def get_current_user(request: Request, payload: dict = Depends(validate_token)):
-    return payload  
-
-
 
 @app.post("/products", response_model=ProductResponse)
 async def create_product(
     product: ProductCreate, 
     db: AsyncSession = Depends(get_db), 
-    user: dict = Depends(get_current_user)):
+    user: dict = Depends(validate_token)):
+    
+    print(user)
+    user_id = user.get("user_id")
+
     
     db_product = Product(
         name=product.name,
         price=product.price,
         stock=product.stock,
+        user_id=user_id
     )
     
     db.add(db_product)
@@ -55,7 +58,8 @@ async def create_product(
 async def get_product(
     product_id: int, 
     db: AsyncSession = Depends(get_db), 
-    user: dict = Depends(get_current_user)):
+    user: dict = Depends(validate_token)):
+    
     
     async with db.begin():
         result = await db.execute(select(Product).filter(Product.id == product_id))
@@ -69,12 +73,10 @@ async def get_product(
 
 
 @app.get("/products", response_model=list[ProductResponse])
-async def list_products(db: AsyncSession = Depends(get_db), user: dict = Depends(get_current_user)):
-    print(user)
+async def list_products(db: AsyncSession = Depends(get_db), user: dict = Depends(validate_token)):
     async with db.begin():
         result = await db.execute(select(Product))
         products = result.scalars().all()
-
     return products
 
 
@@ -84,14 +86,20 @@ async def update_product(
     product_id: int, 
     product: ProductCreate, 
     db: AsyncSession = Depends(get_db), 
-    user: dict = Depends(get_current_user)):
+    user: dict = Depends(validate_token)):
     
+    print(user)
+    user_id = user.get("user_id")
+
     async with db.begin():
         result = await db.execute(select(Product).filter(Product.id == product_id))
         db_product = result.scalars().first()
 
     if not db_product:
         raise HTTPException(status_code=404, detail="Product not found")
+
+    if db_product.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Not authorized to update this product")
 
     db_product.name = product.name
     db_product.price = product.price
@@ -107,7 +115,7 @@ async def update_product(
 async def delete_product(
     product_id: int, 
     db: AsyncSession = Depends(get_db), 
-    user: dict = Depends(get_current_user)):
+    user: dict = Depends(validate_token)):
     
     async with db.begin():
         result = await db.execute(select(Product).filter(Product.id == product_id))

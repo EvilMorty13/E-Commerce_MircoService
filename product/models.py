@@ -7,3 +7,4 @@ class Product(Base):
     name = Column(String, index=True)
     price = Column(Float)
     stock = Column(Integer)
+    user_id = Column(Integer)
