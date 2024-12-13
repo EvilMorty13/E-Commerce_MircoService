@@ -24,13 +24,13 @@ This is a dummy e-commerce web app with 4 microservice. These are
 - Product (CRUD operations with authentication and handling product data)
 - Order (CRUD operations with authentication and handling order data)
 
-Gateway,User and Product microservices are made with Fastapi and Order microservice is made with Django.
+Gateway,User and Product microservices are made with Fastapi and Order microservice is made with Django Rest Framework.
 
 
 ## Prerequisite
 
 - Python 3.12
-- Local Posgress Server
+- Local postgresql Server
 
 
 ## Installation
