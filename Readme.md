@@ -5,15 +5,17 @@
 - [Introduction](#introduction) 
 - [Prerequisite](#prerequisite) 
 - [Installation](#installation) 
-- [Running the Project](#running-the-project) 
-- [Database](#database) 
+- [Database](#database)
+- [Environment Variables](#environment-variables)
+- [Running the Project](#running-the-project)
+- [Docker Compose](#docker-compose)
 - [API Endpoints](#api-endpoints) 
     - [Gateway Endpoints](#gateway-endpoints) 
     - [User Endpoints](#user-endpoints) 
     - [Product Endpoints](#product-endpoints) 
     - [Order Endpoints](#order-endpoints) 
 - [Authentication](#authentication) 
-- [Environment Variables](#environment-variables)
+
 
 
 ## Introdcution
@@ -53,6 +55,13 @@ Gateway,User and Product microservices are made with Fastapi and Order microserv
     pip install -r requirements.txt
    ```
 
+## Database
+Create seperate postgresql databases in your local pc and add the urls in the code.
+
+## Environment Variables 
+
+Microservice Urls, Secret key, Algorithm and Token lifetime are hidden using .env file. Make sure to add that in the project.
+
 ## Running the Project
 
 - **Start the gateway server**
@@ -76,8 +85,12 @@ Gateway,User and Product microservices are made with Fastapi and Order microserv
    ```
 
 
-## Database
-Create seperate postgress databases in your local pc and add the urls in the code.
+## Docker Compose
+
+It's also possible to run the project using Docker compose after setting up the Database and Enviroment Variables.
+   ```bash
+      sudo docker compose up --build
+   ```
 
 ## API Endpoints
 
@@ -161,6 +174,4 @@ After login, a jwt token will be generated. Use this for authentication.
    Authentication : Bearer <Token>
    ```
 
-## Enviroment Variables 
 
-Microservice Urls, Secret key, Algorithm and Token lifetime are hidden using .env file. Make sure to add that in the project.

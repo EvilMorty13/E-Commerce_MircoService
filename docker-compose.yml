@@ -1,0 +1,33 @@
+services:
+  gateway:
+    build: 
+      context: ./gateway
+    network_mode: "host"
+    command: ["uvicorn", "gateway_service:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    depends_on:
+      - user
+  
+  user:
+    build: 
+      context: ./user
+    network_mode: "host"
+    command: ["uvicorn", "user_service:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+  
+  product:
+    build: 
+      context: ./product
+    network_mode: "host"
+    command: ["uvicorn", "product_service:app", "--host", "0.0.0.0", "--port", "8002", "--reload"]
+    depends_on:
+      - user
+      - gateway
+
+  order:
+    build: 
+      context: ./order
+    network_mode: "host"
+    command: python order_project/manage.py runserver 127.0.0.1:8003
+    depends_on:
+      - user
+      - gateway
+      - product
