@@ -2,32 +2,70 @@ services:
   gateway:
     build: 
       context: ./gateway
-    network_mode: "host"
+    ports:
+      - "8000:8000"
     command: ["uvicorn", "gateway_service:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    env_file:
+      - ./gateway/.env
     depends_on:
       - user
+      - postgres
   
   user:
     build: 
       context: ./user
-    network_mode: "host"
+    ports:
+      - "8001:8001"
     command: ["uvicorn", "user_service:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
+    env_file:
+      - ./user/.env
+    depends_on:
+      - postgres
   
   product:
     build: 
       context: ./product
-    network_mode: "host"
+    ports:
+      - "8002:8002"
     command: ["uvicorn", "product_service:app", "--host", "0.0.0.0", "--port", "8002", "--reload"]
+    env_file:
+      - ./product/.env
     depends_on:
       - user
       - gateway
+      - postgres
 
   order:
     build: 
       context: ./order
-    network_mode: "host"
-    command: python order_project/manage.py runserver 127.0.0.1:8003
+    ports:
+      - "8003:8003"
+    command: python order_project/manage.py runserver 0.0.0.0:8003 
+    env_file:
+      - ./order/.env
     depends_on:
       - user
       - gateway
       - product
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: e_commerce_postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}         
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "3000:5432"   
+    volumes:
+      - persistent_storage:/var/lib/postgresql/data
+  
+volumes:
+  persistent_storage: 
+
+
+networks:
+  default:
+    name: e_commerce_microservice_default

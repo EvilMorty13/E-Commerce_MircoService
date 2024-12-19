@@ -1,11 +1,11 @@
 import os
-from dotenv import load_dotenv
+
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-load_dotenv()
+
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 

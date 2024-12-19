@@ -1,3 +1,4 @@
 env
 .env
+!sample.env
 __pycache__

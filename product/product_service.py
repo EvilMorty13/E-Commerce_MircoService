@@ -36,7 +36,7 @@ async def create_product(
     db: AsyncSession = Depends(get_db), 
     user: dict = Depends(validate_token)):
     
-    print(user)
+
     user_id = user.get("user_id")
 
     
@@ -88,7 +88,7 @@ async def update_product(
     db: AsyncSession = Depends(get_db), 
     user: dict = Depends(validate_token)):
     
-    print(user)
+ 
     user_id = user.get("user_id")
 
     async with db.begin():

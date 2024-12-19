@@ -3,10 +3,10 @@ import httpx
 from datetime import datetime, timedelta
 import jwt
 import os
-from dotenv import load_dotenv
+
 from schema import *
 
-load_dotenv()
+
 
 USER_SERVICE_URL = os.getenv('USER_SERVICE_URL')
 SECRET_KEY = os.getenv('SECRET_KEY') 
@@ -30,7 +30,7 @@ async def login(auth_data: AuthRequest):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         user = response.json()
-        print(user)
+
         access_token = create_access_token(data={"email": user["email"], "user_id": user["id"]})
     
     return {"access_token": access_token, "token_type": "bearer"}

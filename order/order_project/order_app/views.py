@@ -1,13 +1,13 @@
 import os
 import requests
-from dotenv import load_dotenv
+
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Order
 from .serializers import OrderCreateSerializer, OrderResponseSerializer, OrderUpdateSerializer
 
-load_dotenv()
+
 AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL")
 PRODUCT_SERVICE_URL = os.getenv("PRODUCT_SERVICE_URL")
 
